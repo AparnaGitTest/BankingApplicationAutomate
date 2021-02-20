@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Suite]" guice-stage="DEVELOPMENT">
+  <test name="Test(failed)">
+    <groups>
+      <run>
+        <include name="newCust"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="testCases.newCustomerTest">
+        <methods>
+          <include name="validateAddedDetails"/>
+          <include name="validateSubmitwithCorrectData"/>
+          <include name="validateCIDwithTheLink"/>
+        </methods>
+      </class> <!-- testCases.newCustomerTest -->
+    </classes>
+  </test> <!-- Test(failed) -->
+</suite> <!-- Failed suite [Suite] -->

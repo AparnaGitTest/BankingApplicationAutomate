@@ -1,5 +1,6 @@
 package com.bnk.actions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -12,29 +13,31 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 
-import com.bnk.base.BaseClass;
+import com.bnk.base.Page;
 import com.bnk.base.Constants;
-import com.bnk.locators.CustomerPageLocators;
+import com.bnk.locators.newCustomerLocators;
 
 import utilities.parameterization;
 
-public class NewCustomer extends BaseClass{
-	public CustomerPageLocators cp;
+public class newCustomer extends Page{
+	public newCustomerLocators cp;
 	
 	
-	public NewCustomer()
+	public newCustomer()
 	{
-		this.cp=new CustomerPageLocators();
+		this.cp=new newCustomerLocators();
 		PageFactory.initElements(driver, this.cp);
 	}
 	
-	
-	public void NewCustomerClick()
+	public void getCustId()
 	{
-		click(cp.newCustomerLink);
+		String url=driver.getCurrentUrl();
+		String[] arr=url.split("=");
+		custId=arr[1];
 	}
 	
-	public void validatePageName()
+	
+	public void validatePageHeading()
 	{
 		
 		String actual="Add New Customer";
@@ -42,7 +45,6 @@ public class NewCustomer extends BaseClass{
 		Assert.assertEquals(actual, expected);
 		
 	}
-	
 	
 	public void clickOnSubmitWhenNoData()
 	{
@@ -55,51 +57,66 @@ public class NewCustomer extends BaseClass{
 		
 	}
 	
-	public void validateCustomerName(String dataToTest, String messageToValidate)
+	public void validateCustomerNameField(String dataToTest, String messageToValidate)
 	{
-		cp.customerName.sendKeys(dataToTest);
+		//Only allow characters in customer name field
+		//Should not allow special characters or numbers
+		//Should not allow blank
+		type(cp.customerName,dataToTest);
 		String actualCustomerMessage=cp.customerNameMessage.getText();
 		Assert.assertEquals(messageToValidate, actualCustomerMessage);
 		cp.customerName.clear();
 	}
 	
-	public void validateAddress(String dataToTest, String messageToValidate)
+	public void validateAddressField(String dataToTest, String messageToValidate)
 	{
-		
-		cp.address.sendKeys(dataToTest);
+		//Only allow characters and numbers
+		//Should not allow special characters
+		//Should not allow blank
+		type(cp.address,dataToTest);
 		String actualaddrMessage=cp.addressMessage.getText();
 		Assert.assertEquals(messageToValidate, actualaddrMessage);
 		cp.address.clear();
 		
 	}
-	public void addCustomerData()
+	public void addCustomerData(String emailId)
 	{
-		cp.customerName.sendKeys(Constants.custData[0]);
-		cp.dob.sendKeys(Constants.custData[1]);
-		cp.address.sendKeys(Constants.custData[2]);
-		cp.city.sendKeys(Constants.custData[3]);
-		cp.state.sendKeys(Constants.custData[4]);
-		cp.pinno.sendKeys(Constants.custData[5]);
-		cp.telephoneno.sendKeys(Constants.custData[6]);
-		cp.emailid.sendKeys(Constants.custData[7]);
-		cp.password.sendKeys(Constants.custData[8]);
+		//Method to fill the form with customer information
+		Constants.custData[7]=emailId;
+		type(cp.customerName,Constants.custData[0]);
+		type(cp.dob,Constants.custData[1]);
+		type(cp.address,Constants.custData[2]);
+		type(cp.city,Constants.custData[3]);
+		type(cp.state,Constants.custData[4]);
+		type(cp.pinno,Constants.custData[5]);
+		type(cp.telephoneno,Constants.custData[6]);
+		type(cp.emailid,Constants.custData[7]);
+		type(cp.password,Constants.custData[8]);
 	}
-	public void validateSubmitwithCorrectData()
+	public void validateSubmitwithCorrectData(String emailId)
 	{
-		addCustomerData();
-		cp.submitbtn.click();
 		
+		addCustomerData(emailId);
+		click(cp.submitbtn);
 		String actualMsg=cp.heading.getText();
 		String expectedMsg="Customer Registered Successfully!!!";
-		
 		Assert.assertEquals(actualMsg, expectedMsg);
+		getCustId();
+		try {
+			Page.storeCustomerData(custId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
-	public void validateCIDwithTheLink()
+	public void validateCustomerIdWithLink()
 	{
+		//addCustomerData(emailId);
+	//	click(cp.submitbtn);
 		String actulaID=cp.customerId.getText();
-		String url=BaseClass.driver.getCurrentUrl();
+		String url=Page.driver.getCurrentUrl();
 		System.out.println(url);
 		String[] arr=url.split("=");
 		String expectedId=arr[1];
@@ -107,11 +124,20 @@ public class NewCustomer extends BaseClass{
 		System.out.println(actulaID);
 		
 		Assert.assertEquals(actulaID, expectedId);
+		Page.custId=expectedId;
+		try {
+			Page.storeCustomerData(custId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	public void validateAddedDetails()
 	{
 		//copying the original Array
+		//addCustomerData(emailId);
+	//	click(cp.submitbtn);
 		String[] custDatacopy=Constants.custData.clone();
 		
 		//removing the last element
@@ -145,6 +171,13 @@ public class NewCustomer extends BaseClass{
 		custdetails.add(1, sb2);
 		
 		Assert.assertEquals(custDatacopy, custdetails.toArray());
+		getCustId();
+		try {
+			Page.storeCustomerData(custId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 	}
@@ -157,10 +190,10 @@ public class NewCustomer extends BaseClass{
 		
 	}
 	
-	public void validateReset()
+	public void validateReset(String emailId)
 	{
-		addCustomerData();
-		cp.reset.click();
+		addCustomerData(emailId);
+		click(cp.reset);
 		int count=0;
 		for(int i=4;i<=13;i++)
 		{
@@ -184,38 +217,58 @@ public class NewCustomer extends BaseClass{
 	}
 	
 	
-	public void newCutomerVerify()
+	public void newCutomerVerify(String emailId)
 	{
-		addCustomerData();
-		cp.submitbtn.click();
+		addCustomerData(emailId);
+		click(cp.submitbtn);
+		getCustId();
+		try {
+			Page.storeCustomerData(custId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String url=driver.getCurrentUrl();
 		String[] arr=url.split("=");
 		String customerID=arr[1];
 		String password=Constants.custData[8].toString();
-		cp.logOut.click();
+		click(cp.logOut);
 		Alert alert=driver.switchTo().alert();
 		alert.accept();
-		BaseClass.login(customerID, password);
+		Page.login(customerID, password);
 		String actualTitle="Guru99 Bank Customer HomePage";
 		String expectedTitle=driver.getTitle();
 		Assert.assertEquals(actualTitle, expectedTitle);
-		
+		Page.allLinks.customizedStatementLink();
+		Page.allLinks.logOutLink();
 		
 	}
-	public void deleteCustomerVerfiy()
+	public void deleteCustomerVerfiy(String emailId)
 	{
-		addCustomerData();
-		cp.submitbtn.click();
+		//delete will have 2 scenarios
+		//create customer and delete
+		//create customer, this customer has account and delete
+		//---system wont allow to delete
+		//this method works when no account is create for the customer
+		addCustomerData(emailId);
+		click(cp.submitbtn);
+		getCustId();
+		try {
+			Page.storeCustomerData(custId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String url=driver.getCurrentUrl();
 		String[] arr=url.split("=");
 		String customerID=arr[1];
-		cp.deleteCustomer.click();
-		cp.deletePageCustID.sendKeys(customerID);
-		cp.deletePageSubmit.click();
+		click(cp.deleteCustomer);
+		type(cp.deletePageCustID,customerID);
+		click(cp.deletePageSubmit);
 		driver.switchTo().alert().accept();
 		driver.switchTo().alert().accept();
-		NewCustomerClick();
-		validateSubmitwithCorrectData();
+		Page.allLinks.newCustomerLink();
+		validateSubmitwithCorrectData(emailId);
 		
 	}
 	public void validateCity()

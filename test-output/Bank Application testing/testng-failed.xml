@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Bank Application testing]" guice-stage="DEVELOPMENT">
+  <listeners>
+    <listener class-name="com.bnk.listeners.customListeners"/>
+    <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+  </listeners>
+  <test name="New customer functionality(failed)">
+    <classes>
+      <class name="testCases.newCustomerTest">
+        <methods>
+          <include name="validateonSubmit"/>
+          <include name="setUp"/>
+          <include name="validateAddedDetails"/>
+          <include name="validateAddressTB"/>
+          <include name="newCutomerVerify"/>
+          <include name="validateReset"/>
+          <include name="validateSubmitwithCorrectData"/>
+          <include name="validatePageName"/>
+          <include name="validateCIDwithTheLink"/>
+          <include name="deleteCustomerVerfiy"/>
+          <include name="validateCustomerNameTB"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- testCases.newCustomerTest -->
+    </classes>
+  </test> <!-- New customer functionality(failed) -->
+</suite> <!-- Failed suite [Bank Application testing] -->

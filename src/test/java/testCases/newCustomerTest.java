@@ -1,98 +1,106 @@
 package testCases;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
+import org.apache.log4j.chainsaw.Main;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import com.bnk.actions.NewCustomer;
-import com.bnk.base.BaseClass;
+import com.bnk.actions.newCustomer;
+import com.bnk.base.Page;
 
 import utilities.parameterization;
 
 public class newCustomerTest {
-	public static NewCustomer nc;
+	public static newCustomer nc;
+	DateFormat format=new SimpleDateFormat("ddMMyyyyhhmmss");
+	  Date d=new Date();
+	  String dategenerate=format.format(d);
+	  String[] emailid=new String[4];
+	// TODO Auto-generated method stub
 	
 	
-	@BeforeSuite
+	
+	@BeforeTest
 	public void setUp()
 	{
-		BaseClass.initConfigurations();
-		nc=new NewCustomer();
-		nc.NewCustomerClick();
+		Page.initConfigurations();
+		Page.login();
+		nc=new newCustomer();
+		Page.allLinks.newCustomerLink();
+		
+		emailid[0]="Robert"+dategenerate+"@gmail.com";
+		emailid[1]="Vonda"+dategenerate+"@gmail.com";
+		emailid[2]="Patric"+dategenerate+"@gmail.com";
+		emailid[3]="Joey"+dategenerate+"@gmail.com";
+		
 	}
 	
 	
-	@Test(priority=1,groups="basic")
+	
+	//@Test(priority=1)
 	public void validatePageName() {
-		// TODO Auto-generated method stub
-		
-		
-		nc.validatePageName();
+	
+		nc.validatePageHeading();
 		
 	}
-	@Test(priority=2,groups="validation")
+	//@Test(priority=2)
 	public void validateonSubmit()
 	{
 		nc.clickOnSubmitWhenNoData();
 	}
 	
-	@Test(priority=3,dataProviderClass=parameterization.class,dataProvider="cust",groups="validation")
+	@Test(priority=3,dataProviderClass=parameterization.class,dataProvider="cust")
 	public void validateCustomerNameTB(String dataToTest,String messageToValidate)
 	{
 		
-		nc.validateCustomerName(dataToTest, messageToValidate);
+		nc.validateCustomerNameField(dataToTest, messageToValidate);
 	}
 	
-	@Test(priority=4,dataProviderClass=parameterization.class,dataProvider="Add",groups="validation")
+	@Test(priority=4,dataProviderClass=parameterization.class,dataProvider="Add")
 	public void validateAddressTB(HashMap<String, String> data)
 	{
 		
-		nc.validateAddress(data.get("addressData"), data.get("addressMsg"));
+		nc.validateAddressField(data.get("addressData"), data.get("addressMsg"));
 	}
-	
-	@Test(priority=5,groups="newCust")
+	@Test(priority=5)
 	public void validateSubmitwithCorrectData()
 	{
-		nc.validateSubmitwithCorrectData();
-	}
-	
-	@Test(priority=6,groups="newCust")
-	public void validateCIDwithTheLink()
-	{
-		nc.validateCIDwithTheLink();
-	}
-	
-	@Test(priority=7,groups="newCust")
-	public void validateAddedDetails()
-	{
+		nc.validateSubmitwithCorrectData(emailid[0]);
+		nc.validateCustomerIdWithLink();
 		nc.validateAddedDetails();
+		nc.cp.Home.click();
+		Page.allLinks.newCustomerLink();
 	}
-	
-	@Test(priority=8,groups="basic")
+	@Test(priority=6)
 	public void validateReset()
 	{
-		nc.validateReset();
+		nc.validateReset(emailid[1]);
 	}
-	
-	@Test(priority=9,groups="newCust")
+	@Test(priority=7)
 	public void newCutomerVerify()
 	{
-		nc.newCutomerVerify();
+		nc.newCutomerVerify(emailid[2]);
+		
+		Page.login();
+		Page.allLinks.newCustomerLink();
+		
 	}
-	@Test(priority=10,groups="basic")
+	@Test(priority=8)
 	public void deleteCustomerVerfiy()
 	{
-		nc.deleteCustomerVerfiy();
+		nc.deleteCustomerVerfiy(emailid[3]);
+		nc.cp.Home.click();
+		Page.allLinks.newCustomerLink();
 	}
 	
-	
-	public void tearDow()
+	@AfterTest
+	public void tearDown()
 	{
-		BaseClass.driver.quit();
+		Page.driver.quit();
 	}
 }

@@ -1,0 +1,17 @@
+com\bnk\actions\linkNavigation.class
+com\bnk\locators\deleteCustomerLocators.class
+com\bnk\actions\editCustomer.class
+com\bnk\actions\customizedStatement.class
+utilities\ExtentManager.class
+com\bnk\actions\newCustomer.class
+utilities\parameterization.class
+com\bnk\base\Page.class
+com\bnk\locators\userRoleLocators.class
+com\bnk\base\Constants.class
+com\bnk\listeners\customListeners.class
+com\bnk\locators\linkNavigationLocators.class
+com\bnk\actions\userRole.class
+com\bnk\actions\deleteCustomer.class
+com\bnk\locators\customerRolePageLocators.class
+com\bnk\locators\newCustomerLocators.class
+com\bnk\actions\customerRolePage.class
